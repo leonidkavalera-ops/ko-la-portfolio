@@ -1,0 +1,85 @@
+/* Основний стиль сайту Ko.L.A. */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #0d0d0d;
+    color: white;
+}
+
+/* Шапка та меню */
+header {
+    padding: 20px;
+    text-align: center;
+    background: #111;
+    border-bottom: 1px solid #222;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+header p {
+    margin: 5px 0 15px 0;
+    color: #aaa;
+}
+
+/* Меню */
+nav a {
+    margin: 0 15px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: #ffcc00;
+}
+
+/* Галерея */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    padding: 20px;
+}
+
+.gallery img {
+    width: 100%;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.gallery img:hover {
+    transform: scale(1.05);
+}
+
+/* Кнопка Back */
+a.back {
+    display: inline-block;
+    margin: 10px 0;
+    color: #ffcc00;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a.back:hover {
+    color: white;
+}
+
+/* Футер */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #111;
+    margin-top: 30px;
+    color: #aaa;
+}
+
+/* Адаптивність для мобільних */
+@media screen and (max-width: 600px) {
+    nav a {
+        display: block;
+        margin: 10px 0;
+    }
+}
