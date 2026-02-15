@@ -3,23 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Art | Ko.L.A.</title>
+<title>Nature | Ko.L.A.</title>
 <link rel="stylesheet" href="../style.css">
+<script type="module" src="../supabaseClient.js"></script>
 </head>
-
-
 
 <body>
 
 <header>
-<h1>Creative Art & Photography</h1>
-<a href="index.html">← Back</a>
+<h1>Nature Photography</h1>
+<a href="../index.html" class="back">← Back</a>
 </header>
 
-<section class="gallery">
-<img src="https://via.placeholder.com/600x400">
-<img src="https://via.placeholder.com/600x400">
-</section>
+<section class="gallery" id="gallery"></section>
+
+<script type="module">
+import { supabase } from '../supabaseClient.js'
+
+async function loadGallery() {
+    const { data, error } = await supabase
+        .from('photos')
+        .select('*')
+        .eq('category', 'Art')
+        .order('created_at', { ascending: false })
+
+    if (error) return console.error(error)
+
+    const gallery = document.getElementById('gallery')
+    gallery.innerHTML = ''
+
+    data.forEach(photo => {
+        const img = document.createElement('img')
+        img.src = photo.url
+        gallery.appendChild(img)
+    })
+}
+
+loadGallery()
+</script>
 
 </body>
 </html>
