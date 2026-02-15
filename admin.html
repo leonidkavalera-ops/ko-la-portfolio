@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin | Ko.L.A.</title>
+<link rel="stylesheet" href="style.css">
+<script type="module" src="supabaseClient.js"></script>
+</head>
+<body>
+
+<header>
+<h1>Admin Panel</h1>
+<a href="index.html" class="back">← Back</a>
+</header>
+
+<section>
+<h2>Upload Photo</h2>
+<input type="file" id="photoFile">
+<select id="category">
+<option value="Nature">Nature</option>
+<option value="Travel">Travel</option>
+<option value="Art">Art</option>
+<option value="Macro">Macro</option>
+</select>
+<button onclick="uploadPhoto()">Upload</button>
+
+<h2>Photo List</h2>
+<ul id="photoList"></ul>
+</section>
+
+<script type="module">
+import { supabase } from './supabaseClient.js'
+
+async function uploadPhoto() {
+    const fileInput = document.getElementById('photoFile')
+    const category = document.getElementById('category').value
+    const file = fileInput.files[0]
+    if (!file) return alert('Choose a file')
+
+    // Завантаження в Supabase Storage
+    const { data, error } = await supabase.storage.from('photos').upload(file.name, file, { upsert: true })
+    if (error) return alert(error.message)
+
+    // Отримуємо публічне посилання
+    const { publicURL, error: urlError } = supabase.storage.from('photos').getPublicUrl(file.name)
+    if (urlError) return alert(urlError.message)
+
+    // Додаємо запис у таблицю
+    const { data: dbData, error: dbError } = await supabase.from('photos').insert([{ category, url: publicURL }])
+    if (dbError) return alert(dbError.message)
+
+    alert('Uploaded!')
+    loadPhotos()
+    fileInput.value = '' // очистити вибір файлу
+}
+
+async function loadPhotos() {
+    const { data, error } = await supabase.from('photos').select('*').order('created_at', { ascending: false })
+    if (error) return alert(error.message)
+
+    const list = document.getElementById('photoList')
+    list.innerHTML = ''
+    data.forEach(photo => {
+        const li = document.createElement('li')
+        li.innerHTML = `${photo.category} - <a href="${photo.url}" target="_blank">View</a> - <button onclick="deletePhoto(${photo.id}, '${photo.url}')">Delete</button>`
+        list.appendChild(li)
+    })
+}
+
+async function deletePhoto(id, url) {
+    // Видалення з Storage
+    const { error: delError } = await supabase.storage.from('photos').remove([url.split('/').pop()])
+    if (delError) return alert(delError.message)
+
+    // Видалення з таблиці
+    const { error } = await supabase.from('photos').delete().eq('id', id)
+    if (error) return alert(error.message)
+
+    loadPhotos()
+}
+
+loadPhotos()
+</script>
+
+</body>
+</html>
