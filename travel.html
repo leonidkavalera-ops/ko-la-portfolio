@@ -20,14 +20,13 @@
 <section class="gallery" id="gallery"></section>
 
 <script type="module">
-import { supabase } from './supabaseClient.js'
+import { supabase } from '../supabaseClient.js'
 
 async function loadGallery() {
     const { data, error } = await supabase
         .from('photos')
         .select('*')
         .eq('category', 'Travel')
-        .order('created_at', { ascending: false })
 
     if (error) {
         console.error(error)
@@ -40,7 +39,6 @@ async function loadGallery() {
     data.forEach(photo => {
         const img = document.createElement('img')
         img.src = photo.url
-        img.alt = "Travel photo"
         gallery.appendChild(img)
     })
 }
