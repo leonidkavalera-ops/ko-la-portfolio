@@ -25,23 +25,19 @@ async function loadGallery() {
     const { data, error } = await supabase
         .from('photos')
         .select('*')
-        .ilike('category', 'nature')
-        .order('created_at', { ascending: false })
 
-    if (error) {
-        console.error(error)
-        return
-    }
+    console.log("DATA:", data)
+    console.log("ERROR:", error)
 
     const gallery = document.getElementById('gallery')
     gallery.innerHTML = ''
 
+    if (!data) return
+
     data.forEach(photo => {
         const img = document.createElement('img')
         img.src = photo.url
-        img.style.width = "100%"
-        img.style.maxWidth = "400px"
-        img.style.margin = "10px"
+        img.style.width = "300px"
         gallery.appendChild(img)
     })
 }
