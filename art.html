@@ -26,7 +26,7 @@ async function loadGallery() {
     const { data, error } = await supabase
         .from('photos')
         .select('*')
-        .eq('category', 'Art')
+        .ilike('category', 'travel')
 
     if (error) {
         console.error(error)
