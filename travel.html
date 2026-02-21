@@ -26,7 +26,7 @@ async function loadGallery() {
     const { data, error } = await supabase
         .from('photos')
         .select('*')
-        .eq('category', 'Nature')
+        .ilike('category', 'travel')
         .order('created_at', { ascending: false })
 
     if (error) {
