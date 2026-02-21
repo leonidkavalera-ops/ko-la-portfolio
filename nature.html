@@ -1,12 +1,11 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nature | Ko.L.A.</title>
 
-<link rel="stylesheet" href="style.css">
-<script type="module" src="supabaseClient.js"></script>
+<link rel="stylesheet" href="/ko-la-portfolio/style.css">
 
 </head>
 
@@ -14,19 +13,20 @@
 
 <header>
     <h1>Nature Photography</h1>
-    <a href="index.html">← Back</a>
+    <a href="/ko-la-portfolio/index.html">← Back</a>
 </header>
 
 <section class="gallery" id="gallery"></section>
 
 <script type="module">
-import { supabase } from '../supabaseClient.js'
+import { supabase } from '/ko-la-portfolio/supabaseClient.js'
 
 async function loadGallery() {
     const { data, error } = await supabase
         .from('photos')
         .select('*')
-        .eq('category', 'Nature')
+        .ilike('category', 'nature')
+        .order('created_at', { ascending: false })
 
     if (error) {
         console.error(error)
@@ -39,6 +39,9 @@ async function loadGallery() {
     data.forEach(photo => {
         const img = document.createElement('img')
         img.src = photo.url
+        img.style.width = "100%"
+        img.style.maxWidth = "400px"
+        img.style.margin = "10px"
         gallery.appendChild(img)
     })
 }
