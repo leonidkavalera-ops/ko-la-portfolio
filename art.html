@@ -20,32 +20,31 @@
 <section class="gallery" id="gallery"></section>
 
 <script type="module">
-import { supabase } from '../supabaseClient.js'
+import { supabase } from '/ko-la-portfolio/supabaseClient.js'
 
 async function loadGallery() {
     const { data, error } = await supabase
         .from('photos')
         .select('*')
-        .ilike('category', 'travel')
 
-    if (error) {
-        console.error(error)
-        return
-    }
+    console.log("DATA:", data)
+    console.log("ERROR:", error)
 
     const gallery = document.getElementById('gallery')
     gallery.innerHTML = ''
 
+    if (!data) return
+
     data.forEach(photo => {
         const img = document.createElement('img')
         img.src = photo.url
+        img.style.width = "300px"
         gallery.appendChild(img)
     })
 }
 
 loadGallery()
 </script>
-
 
 </body>
 </html>
