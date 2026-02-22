@@ -1,19 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
-    <title>Nature Photography</title>
-    <link rel="stylesheet" href="../style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nature | Ko.L.A.</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h1>Nature Photography</h1>
-<a href="../index.html">← Back</a>
+<header>
+    <h1>Nature Photography</h1>
+    <a href="index.html">← Back</a>
+</header>
 
-<div class="gallery">
-    <img src="nature1.jpg" alt="">
-    <img src="nature2.jpg" alt="">
-    <img src="nature3.jpg" alt="">
-</div>
+<section class="gallery" id="gallery"></section>
+
+<script type="module">
+import { supabase } from './supabaseClient.js'
+
+async function loadGallery() {
+    const { data, error } = await supabase
+        .from('photos')
+        .select('*')
+        .eq('category', 'Nature')
+
+    if (error) {
+        console.error("ERROR:", error)
+        return
+    }
+
+    const gallery = document.getElementById('gallery')
+    gallery.innerHTML = ''
+
+    data.forEach(photo => {
+
+        // 🔥 Генеруємо правильний публічний URL
+        const { data: publicUrlData } = supabase
+            .storage
+            .from('photos')
+            .getPublicUrl(photo.url)
+
+        const img = document.createElement('img')
+        img.src = publicUrlData.publicUrl
+        img.style.width = "300px"
+        img.style.margin = "10px"
+
+        gallery.appendChild(img)
+    })
+}
+
+loadGallery()
+</script>
 
 </body>
 </html>
