@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nature | Ko.L.A.</title>
-
 <link rel="stylesheet" href="style.css">
-<script type="module" src="supabaseClient.js"></script>
 </head>
 
 <body>
@@ -22,24 +20,32 @@
 import { supabase } from './supabaseClient.js'
 
 async function loadGallery() {
-
     const { data, error } = await supabase
         .from('photos')
         .select('*')
         .eq('category', 'Nature')
 
-    console.log("DATA:", data)
-    console.log("ERROR:", error)
-
-    if (error) return
+    if (error) {
+        console.error("ERROR:", error)
+        return
+    }
 
     const gallery = document.getElementById('gallery')
     gallery.innerHTML = ''
 
     data.forEach(photo => {
+
+        // 🔥 Генеруємо правильний публічний URL
+        const { data: publicUrlData } = supabase
+            .storage
+            .from('photos')
+            .getPublicUrl(photo.url)
+
         const img = document.createElement('img')
-        img.src = photo.url
+        img.src = publicUrlData.publicUrl
         img.style.width = "300px"
+        img.style.margin = "10px"
+
         gallery.appendChild(img)
     })
 }
