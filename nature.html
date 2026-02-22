@@ -34,18 +34,10 @@ async function loadGallery() {
     gallery.innerHTML = ''
 
     data.forEach(photo => {
-
-        // 🔥 Генеруємо правильний публічний URL
-        const { data: publicUrlData } = supabase
-            .storage
-            .from('photos')
-            .getPublicUrl(photo.url)
-
         const img = document.createElement('img')
-        img.src = publicUrlData.publicUrl
+        img.src = photo.url
         img.style.width = "300px"
         img.style.margin = "10px"
-
         gallery.appendChild(img)
     })
 }
